@@ -1,0 +1,21 @@
+name: Build and Push Demo App image to ECR
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          IMAGE_TAG: sha-${{ GITHUB_SHA::7 }}
+        run: |
+          printf '%s' "${{ secrets.DEV_WILLIAM_DEMO_TOKEN }}" | docker login --username AWS --password-stdin "${{ secrets.MY_ECR }}"
+          docker build -t "${{ secrets.MY_ECR }}/${{ secrets.MY_REPO }}/${{ vars.MY_APP }}:$IMAGE_TAG" .
+          docker push "${{ secrets.MY_ECR }}/${{ secrets.MY_REPO }}/${{ vars.MY_APP }}:$IMAGE_TAG"
