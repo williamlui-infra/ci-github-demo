@@ -16,5 +16,5 @@ jobs:
         run: |
           IMAGE_TAG="sha-${GITHUB_SHA::7}"
           printf '%s' "${{ secrets.DEV_WILLIAM_DEMO_TOKEN }}" | docker login --username AWS --password-stdin "${{ vars.MY_ECR }}"
-          docker build -t "${{ vars.MY_ECR }}/${{ vars.MY_REPO }}:${{ vars.MY_APP }}-$IMAGE_TAG" .
+          docker build --provenance=false -t "${{ vars.MY_ECR }}/${{ vars.MY_REPO }}:${{ vars.MY_APP }}-$IMAGE_TAG" .
           docker push "${{ vars.MY_ECR }}/${{ vars.MY_REPO }}:${{ vars.MY_APP }}-$IMAGE_TAG"
